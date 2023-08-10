@@ -1,0 +1,183 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block custom-style %}
+<style>
+  #chat2 .form-control {
+border-color: transparent;
+}
+
+#chat2 .form-control:focus {
+border-color: transparent;
+box-shadow: inset 0px 0px 0px 1px transparent;
+}
+
+.divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background: #eee;
+}
+</style>
+{% endblock %}
+{% block content %}
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+        <!-- Navbar & Hero Start -->
+        <div class="container-xxl position-relative p-0">
+            {% include 'includes/menu.html'  %}
+            <div class="container-xxl bg-primary page-header">
+            </div>
+        </div>
+        <!-- Navbar & Hero End -->
+        <!-- Contact Start -->
+        <div class="container-xxl py-6">
+            <div class="container">
+                <div class="mx-auto text-center wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+                  <div class="d-inline-block border rounded-pill text-primary px-4 mb-3">Public</div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.3s">
+<form action="{% url 'public:add_messages' id=complaint_id  %}" method="POST" id="form_1">
+{% csrf_token %}
+<div class="row g-3">
+<div class="col-lg-6">
+  <h4 class="mb-5">View Complaint</h4>
+                            <dl>
+                              <dt>Department:</dt>
+                              <dd>{{ complaints.selected_department.department_name }}, {{ complaints.selected_department.location }}</dd>
+                              <dt>Complaints Subject:</dt>
+                              <dd>{{ complaints.complaints_subject }}</dd>
+                              <dt>Complaints:</dt>
+                              <dd>{{ complaints.complaints_text }}</dd>
+                              <dt>Status:</dt>
+                              <dd>{{ complaints.status }}</dd>
+                              <dt>Date Added:</dt>
+                              <dd>{{ complaints.date_added }}</dd>
+                              <dt>Submitted By:</dt>
+                              <dd>{{ complaints.public_user.firstname }} {{ complaints.public_user.lastname }}, {{ complaints.public_user.mobilenumber }}, {{ complaints.public_user.email }}</dd>
+                            </dl>
+</div>
+<div class="col-lg-6">
+  <h4 class="mb-5">Complaint Actions</h4>
+<dl>
+<dt>Official Reply:</dt>
+  <div class="col-12">
+      <div class="form-floating">
+<textarea class="form-control" placeholder="Reply" id="reply" name="reply" style="height: 100px" disabled>
+{{ complaints.reply }}
+</textarea>
+      </div>
+  </div>
+</dl>
+
+</div>
+<div class="col-lg-12">
+<h4 class="mb-5">Messages</h4>
+  <section style="padding-top: 25px; padding-bottom: 25px;">
+    <div class="container">
+
+      <div class="row d-flex justify-content-center">
+        <div class="col-md-12">
+
+          <div class="card" id="chat2">
+            <div class="card-header d-flex justify-content-between align-items-center p-3">
+              <h5 class="mb-0">Chat</h5>
+            </div>
+            <div class="card-body" data-mdb-perfect-scrollbar="true">
+
+              <div class="divider d-flex align-items-center mb-4">
+                <p class="text-center mx-3 mb-0" style="color: #a2aab7;">
+                  {% if messages %}
+                  <ul class="messages text-center">
+                  {% for message in messages %}
+                   <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                   {% endfor %}
+                   </ul>
+                   {% endif %}
+                </p>
+              </div>
+
+{% if user_messages.count > 0 %}
+{% for row in user_messages %}
+{% if row.status == 'department_user' %}
+<div class="d-flex flex-row justify-content-start mb-4">
+    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
+      alt="avatar 1" style="width: 45px; height: 100%;">
+    <div>
+      <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">{{ row.messages_text }}</p>
+      <p class="small ms-3 mb-3 rounded-3 text-muted">{{ complaints.selected_department.department_name }} {{ row.date_added }}</p>
+    </div>
+  </div>
+{% endif %}
+{% if row.status == 'user' %}
+<div class="d-flex flex-row justify-content-end">
+  <div>
+    <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">{{ row.messages_text }}</p>
+    <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">{{ complaints.public_user.firstname }} {{ complaints.public_user.lastname }}, {{ row.date_added }}</p>
+  </div>
+  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp"
+    alt="avatar 1" style="width: 45px; height: 100%;">
+</div>
+{% endif %}
+{% endfor %}
+{% else %}
+<b>No messages added yet</b>
+{% endif %}
+
+            </div>
+            <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
+                alt="avatar 3" style="width: 40px; height: 100%;">
+              <input type="text" class="form-control form-control-lg" id="message" name="message" placeholder="Type message">
+              <input type="submit" class="btn btn-success btn-md" value="Send" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+</div>
+                      </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Contact End -->
+        <!-- Footer Start -->
+        {% include 'includes/footer.html'  %}
+        <!-- Footer End -->
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+{% endblock %}
+{% block custom-js %}
+<script src="{% static 'lib/validate/jquery.validate.min.js' %}"></script>
+<script src="{% static 'lib/validate/additional-methods.min.js' %}"></script>
+<script>
+$(document).ready(function() {
+    $( "#form_1" ).validate({
+     ignore: [],
+     errorPlacement: function(error, element) {
+    error.insertAfter(element.parent());
+    },
+      rules: {
+            message: {
+              required: true,
+              minlength: 1,
+              maxlength: 255
+            },
+      }
+    });
+} );
+</script>
+{% endblock %}

@@ -1,0 +1,51 @@
+<nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+    <a href="" class="navbar-brand p-0">
+        <h1 class="m-0">PGRMS</h1>
+        <!-- <img src="img/logo.png" alt="Logo"> -->
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="fa fa-bars"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        {% if 'is_logged_in' in request.session and request.session.usertype == 'admin' %}
+        <div class="navbar-nav ms-auto py-0">
+          <a href="{% url 'site_admin:dashboard' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
+          <a href="{% url 'site_admin:list_public_user' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'list_public_user' %}active{% endif %}">Public User</a>
+          <a href="{% url 'site_admin:list_dep_user' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'list_dep_user' %}active{% endif %}">Department User</a>
+          <a href="{% url 'site_admin:list_complaints' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'list_complaints' %}active{% endif %}">Complaints</a>
+          <a href="{% url 'site_admin:add_location' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'add_location' %}active{% endif %}">Add Location</a>
+          <a href="{% url 'site_admin:add_department' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'add_department' %}active{% endif %}">Add Departments</a>
+        </div>
+        <a href="{% url 'site_admin:logout' %}" class="btn btn-light rounded-pill text-primary py-2 px-4 ms-lg-5">Sign Out</a>
+        {% elif 'is_logged_in' in request.session and request.session.usertype == 'user' %}
+        <div class="navbar-nav ms-auto py-0">
+          <a href="{% url 'public:dashboard' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
+          <a href="{% url 'public:complaints_list' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'complaints_list' %}active{% endif %}">Complaints</a>
+        </div>
+        <a href="{% url 'public:logout' %}" class="btn btn-light rounded-pill text-primary py-2 px-4 ms-lg-5">Sign Out</a>
+        {% elif 'is_logged_in' in request.session and request.session.usertype == 'department_user' %}
+        <div class="navbar-nav ms-auto py-0">
+          <a href="{% url 'department:dashboard' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
+          <a href="{% url 'department:complaints_list' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'complaints_list' %}active{% endif %}">View complaints</a>
+        </div>
+        <a href="{% url 'department:logout' %}" class="btn btn-light rounded-pill text-primary py-2 px-4 ms-lg-5">Sign Out</a>
+        {% else %}
+        <div class="navbar-nav ms-auto py-0">
+            <a href="{% url 'index:home' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
+            <a href="{% url 'index:about' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a>
+            <a href="{% url 'index:feature' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'feature' %}active{% endif %}">Feature</a>
+            <a href="{% url 'index:team' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'team' %}active{% endif %}">Team</a>
+            <a href="{% url 'index:contact_us' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'contact_us' %}active{% endif %}">Contact Us</a>
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Department</a>
+                <div class="dropdown-menu m-0">
+                    <a href="{% url 'department:signin' %}" class="dropdown-item {% if request.resolver_match.url_name == 'department/signin' %}active{% endif %}">Sign In</a>
+                    <a href="{% url 'department:signup' %}" class="dropdown-item {% if request.resolver_match.url_name == 'department/signup' %}active{% endif %}">Sign Up</a>
+                </div>
+            </div>
+            <a href="{% url 'public:signup' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'public/signup' %}active{% endif %}">Sign Up</a>
+        </div>
+        <a href="{% url 'public:signin' %}" class="btn btn-light rounded-pill text-primary py-2 px-4 ms-lg-5 {% if request.resolver_match.url_name == 'public/signin' %}active{% endif %}">Sign In</a>
+        {% endif %}
+    </div>
+</nav>
